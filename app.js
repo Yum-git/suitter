@@ -6,6 +6,7 @@ import {HexagonLayer} from '@deck.gl/aggregation-layers';
 import {IconLayer} from '@deck.gl/layers';
 import DeckGL from '@deck.gl/react';
 
+//GPSにて現在地を取得
 var watch_id = navigator.geolocation.watchPosition(test2, function(e) { alert(e.message); }, {"enableHighAccuracy": true, "timeout": 20000, "maximumAge": 2000});
 var iconDatas = [];
 
@@ -13,6 +14,7 @@ const ICON_MAPPING = {
   marker: {x: 0, y: 0, width: 32, height: 32, mask: true}
 };
 
+//取得したGPSデータを緯度経度のみ取り出して出力
 function test2(position) {
     var location = position.coords.longitude + ',' + position.coords.latitude;
 
@@ -60,16 +62,18 @@ const material = {
   specularColor: [51, 51, 51]
 };
 
+//マップ初期表示設定
 const INITIAL_VIEW_STATE = {
-  longitude: 137.322986,
-  latitude: 34.82552403,
-  zoom: 6.6,
+  longitude: 136.897874,
+  latitude: 35.1620737,
+  zoom: 10.0,
   minZoom: 5,
   maxZoom: 15,
   pitch: 40.5,
   bearing: -27.396674584323023
 };
 
+//3Dグラフに表示される際の色の設定
 const colorRange = [
   [1, 152, 189],
   [73, 227, 206],
@@ -99,6 +103,7 @@ export default class App extends Component {
 
     
     return [
+      //浸水データを出力するためのレイヤー
       new HexagonLayer({
         id: 'heatmap',
         colorRange,
@@ -118,12 +123,12 @@ export default class App extends Component {
           elevationScale: 3000
         }
       }),
-      // TODO:
+      //現在地を出力するためのレイヤー
       new IconLayer({
         id: 'icon-layer',
         data: iconDatas,
         pickable: true,
-        iconAtlas: 'map_pin.png',
+        iconAtlas: 'images/map_pin.png',
         iconMapping: ICON_MAPPING,
         getIcon: (iconData) => {
 
@@ -133,7 +138,8 @@ export default class App extends Component {
         getPosition: (iconData) => {
           return iconData.position;
         },
-        getSize: d => 5
+        getSize: d => 5,
+        getColor: d => [Math.sqrt(d.exits), 140, 0]
       })
     ];
   }
@@ -170,10 +176,7 @@ export function renderToDOM(container) {
   });
 }
 
-// const ICON_MAPPING = {
-//   marker: {x: 0, y: 0, width: 32, height: 32, mask: true}
-// };
-
+/*
 const loadData = () =>{
   data = test2();
   GPSLy(data);
@@ -197,3 +200,5 @@ const GPSLy = (data) => {
 
   renderLayer(data);
 }
+
+*/
